@@ -91,6 +91,27 @@ export default function App() {
 
             <Text style={styles.segundoTitle}>List</Text>
           </View>
+
+          <View style={styles.containerPriority}>
+            <View style={styles.borderButtonPriority}></View>
+
+            <TouchableOpacity style={[styles.buttonPriority, { backgroundColor: "" }]} onPress={() => { }}>
+              <Text style={{ color: "#ede615", fontWeight: "bold" }}>Low</Text>
+            </TouchableOpacity>
+
+            <View style={styles.borderButtonPriority}></View>
+
+            <TouchableOpacity style={[styles.buttonPriority, { backgroundColor: "" }]} onPress={() => { }}>
+              <Text style={{ color: "#fdaf3d", fontWeight: "bold" }}>Medium</Text>
+            </TouchableOpacity>
+
+            <View style={styles.borderButtonPriority}></View>
+            <TouchableOpacity style={[styles.buttonPriority, { backgroundColor: "" }]} onPress={() => { }}>
+              <Text style={{ color: "#e76256", fontWeight: "bold" }}>High</Text>
+            </TouchableOpacity>
+
+            <View style={styles.borderButtonPriority}></View>
+          </View>
           <View style={styles.Body}>
             <FlatList
               data={task}
@@ -139,7 +160,7 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     marginTop: 20,
     backgroundColor: "#FFF",
-    
+
   },
   Body: {
     flex: 1
@@ -163,6 +184,19 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     borderWidth: 1,
     borderColor: "#eee"
+  },
+  buttonPriority: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    height: "100%",
+    width: '30%',
+    borderRadius: 5,
+  },
+  borderButtonPriority: {
+    borderWidth: 1,
+    height: "70%",
+    borderColor: "#c9d7e1",
   },
   Button: {
     height: 40,
@@ -218,5 +252,20 @@ const styles = StyleSheet.create({
     paddingBottom: 5,
     marginBottom: 2,
     marginTop: 5,
+  },
+  containerPriority: {
+    width: "90%",
+    padding: 5,
+    borderRadius: 10,
+    height: 40,
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-around",
+    borderWidth: 1,
+    borderColor: "#c9d7e1",
+    alignItems: "center",
+    marginBottom: 10,
+    marginTop: 15,
+    marginLeft:15
   },
 });
