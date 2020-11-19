@@ -7,7 +7,6 @@ import {
   Alert,
   KeyboardAvoidingView,
   Platform,
-  AsyncStorage
 } from "react-native";
 
 import {
@@ -22,19 +21,44 @@ import {
 export default function App() {
   const [task, setTask] = useState([]);
   const [newTask, setNewTask] = useState("");
+  const [currentPriority, setCurrentPriority] = useState("")
+  const [feed, setFeed] = useState("")
+  
+  const colors = {
+    "low": "#ede615",
+    "medium": "#fdaf3d",
+    "high":"#e76256"
+  }
 
   async function addTask() {
-    const search = task.filter(task => task === newTask);
+    const search = task.filter(task => task.name === newTask);
 
     if (search.length !== 0) {
       Alert.alert("Atenção", "Nome da tarefa repetido!");
       return;
     }
 
-    setTask([...task, newTask]);
+    let newNewTask = {
+      name: newTask,
+      priority: currentPriority
+    }
+
+    setTask([...task, newNewTask]);
     setNewTask("");
 
     Keyboard.dismiss();
+  }
+
+  function handlePriorityBtPress(priority){
+    setCurrentPriority(priority)
+
+    if(newTask.length === 0){
+      const search = task.filter(task => task.priority === priority);
+      setFeed(search)
+    }else{
+      return
+    }
+    
   }
 
   async function removeTask(item) {
@@ -51,7 +75,7 @@ export default function App() {
         },
         {
           text: "OK",
-          onPress: () => setTask(task.filter(tasks => tasks !== item))
+          onPress: () => setTask(task.filter(tasks => tasks !== item)),
         }
       ],
       { cancelable: false }
@@ -59,22 +83,10 @@ export default function App() {
   }
 
   useEffect(() => {
-    async function carregaDados() {
-      const task = await AsyncStorage.getItem("task");
-
-      if (task) {
-        setTask(JSON.parse(task));
-      }
-    }
-    carregaDados();
-  }, []);
-
-  useEffect(() => {
-    async function salvaDados() {
-      AsyncStorage.setItem("task", JSON.stringify(task));
-    }
-    salvaDados();
+    setFeed([...task])
   }, [task]);
+
+  
 
   return (
     <>
@@ -95,18 +107,18 @@ export default function App() {
           <View style={styles.containerPriority}>
             <View style={styles.borderButtonPriority}></View>
 
-            <TouchableOpacity style={[styles.buttonPriority, { backgroundColor: "" }]} onPress={() => { }}>
+            <TouchableOpacity style={[styles.buttonPriority, { backgroundColor: "" }]} onPress={() => handlePriorityBtPress("low")}>
               <Text style={{ color: "#ede615", fontWeight: "bold" }}>Low</Text>
             </TouchableOpacity>
 
             <View style={styles.borderButtonPriority}></View>
 
-            <TouchableOpacity style={[styles.buttonPriority, { backgroundColor: "" }]} onPress={() => { }}>
+            <TouchableOpacity style={[styles.buttonPriority, { backgroundColor: "" }]} onPress={() => handlePriorityBtPress("medium")}>
               <Text style={{ color: "#fdaf3d", fontWeight: "bold" }}>Medium</Text>
             </TouchableOpacity>
 
             <View style={styles.borderButtonPriority}></View>
-            <TouchableOpacity style={[styles.buttonPriority, { backgroundColor: "" }]} onPress={() => { }}>
+            <TouchableOpacity style={[styles.buttonPriority, { backgroundColor: "" }]} onPress={() => handlePriorityBtPress("high")}>
               <Text style={{ color: "#e76256", fontWeight: "bold" }}>High</Text>
             </TouchableOpacity>
 
@@ -114,18 +126,18 @@ export default function App() {
           </View>
           <View style={styles.Body}>
             <FlatList
-              data={task}
-              keyExtractor={item => item.toString()}
+              data={feed}
+              keyExtractor={feed => feed.name}
               showsVerticalScrollIndicator={false}
               style={styles.FlatList}
               renderItem={({ item }) => (
                 <View style={styles.ContainerView}>
-                  <Text style={styles.Texto}>{item}</Text>
+                  <Text style={styles.Texto}>{item.name}</Text>
                   <TouchableOpacity onPress={() => removeTask(item)}>
                     <MaterialIcons
                       name="delete-forever"
                       size={25}
-                      color="#f64c75"
+                      color= {colors[item.priority]}
                     />
                   </TouchableOpacity>
                 </View>
