@@ -30,6 +30,8 @@ export default function App() {
     "high":"#e76256"
   }
 
+  const values = ["low","medium","high"]
+
   async function addTask() {
     const search = task.filter(task => task.name === newTask);
 
@@ -107,18 +109,18 @@ export default function App() {
           <View style={styles.containerPriority}>
             <View style={styles.borderButtonPriority}></View>
 
-            <TouchableOpacity style={[styles.buttonPriority, { backgroundColor: "" }]} onPress={() => handlePriorityBtPress("low")}>
+            <TouchableOpacity style={[styles.buttonPriority, { backgroundColor: "" }]} onPress={() => handlePriorityBtPress(0)}>
               <Text style={{ color: "#ede615", fontWeight: "bold" }}>Low</Text>
             </TouchableOpacity>
 
             <View style={styles.borderButtonPriority}></View>
 
-            <TouchableOpacity style={[styles.buttonPriority, { backgroundColor: "" }]} onPress={() => handlePriorityBtPress("medium")}>
+            <TouchableOpacity style={[styles.buttonPriority, { backgroundColor: "" }]} onPress={() => handlePriorityBtPress(1)}>
               <Text style={{ color: "#fdaf3d", fontWeight: "bold" }}>Medium</Text>
             </TouchableOpacity>
 
             <View style={styles.borderButtonPriority}></View>
-            <TouchableOpacity style={[styles.buttonPriority, { backgroundColor: "" }]} onPress={() => handlePriorityBtPress("high")}>
+            <TouchableOpacity style={[styles.buttonPriority, { backgroundColor: "" }]} onPress={() => handlePriorityBtPress(2)}>
               <Text style={{ color: "#e76256", fontWeight: "bold" }}>High</Text>
             </TouchableOpacity>
 
@@ -137,7 +139,7 @@ export default function App() {
                     <MaterialIcons
                       name="delete-forever"
                       size={25}
-                      color= {colors[item.priority]}
+                      color= {colors[values[item.priority]]}
                     />
                   </TouchableOpacity>
                 </View>
