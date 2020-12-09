@@ -7,6 +7,7 @@ import {
   Alert,
   KeyboardAvoidingView,
   Platform,
+  AsyncStorage
 } from "react-native";
 
 import {
@@ -29,8 +30,6 @@ export default function App() {
     "medium": "#fdaf3d",
     "high":"#e76256"
   }
-
-  const values = ["low","medium","high"]
 
   async function addTask() {
     const search = task.filter(task => task.name === newTask);
@@ -65,8 +64,8 @@ export default function App() {
 
   async function removeTask(item) {
     Alert.alert(
-      "Deletar Task",
-      "Tem certeza que deseja remover esta anotação?",
+      "Deseja deletar?",
+      `"${item.name}"`,
       [
         {
           text: "Cancel",
@@ -88,7 +87,24 @@ export default function App() {
     setFeed([...task])
   }, [task]);
 
-  
+  useEffect(() => {
+    async function carregaDados() {
+      const task = await AsyncStorage.getItem("task");
+
+      if (task) {
+        setTask(JSON.parse(task));
+      }
+    }
+    carregaDados();
+  }, []);
+
+  useEffect(() => {
+    async function salvaDados() {
+      AsyncStorage.setItem("task", JSON.stringify(task));
+    }
+    salvaDados();
+  }, [task]);
+
 
   return (
     <>
@@ -98,10 +114,10 @@ export default function App() {
         style={{ flex: 1 }}
         enabled={Platform.OS === "ios"}
       >
-        <View style={styles.container}>
+        <View style={styles.container} >
           <StatusBar barStyle="dark-content" backgroundColor="#fdfdfd" />
           <View style={styles.header}>
-            <Text style={styles.primeiroTitle}>ToDo</Text>
+            <Text style={styles.primeiroTitle} onPress={() => setFeed([...task])}>ToDo</Text>
 
             <Text style={styles.segundoTitle}>List</Text>
           </View>
@@ -109,18 +125,18 @@ export default function App() {
           <View style={styles.containerPriority}>
             <View style={styles.borderButtonPriority}></View>
 
-            <TouchableOpacity style={[styles.buttonPriority, { backgroundColor: "" }]} onPress={() => handlePriorityBtPress(0)}>
+            <TouchableOpacity style={[styles.buttonPriority, { backgroundColor: "" }]} onPress={() => handlePriorityBtPress("low")}>
               <Text style={{ color: "#ede615", fontWeight: "bold" }}>Low</Text>
             </TouchableOpacity>
 
             <View style={styles.borderButtonPriority}></View>
 
-            <TouchableOpacity style={[styles.buttonPriority, { backgroundColor: "" }]} onPress={() => handlePriorityBtPress(1)}>
+            <TouchableOpacity style={[styles.buttonPriority, { backgroundColor: "" }]} onPress={() => handlePriorityBtPress("medium")}>
               <Text style={{ color: "#fdaf3d", fontWeight: "bold" }}>Medium</Text>
             </TouchableOpacity>
 
             <View style={styles.borderButtonPriority}></View>
-            <TouchableOpacity style={[styles.buttonPriority, { backgroundColor: "" }]} onPress={() => handlePriorityBtPress(2)}>
+            <TouchableOpacity style={[styles.buttonPriority, { backgroundColor: "" }]} onPress={() => handlePriorityBtPress("high")}>
               <Text style={{ color: "#e76256", fontWeight: "bold" }}>High</Text>
             </TouchableOpacity>
 
@@ -139,7 +155,7 @@ export default function App() {
                     <MaterialIcons
                       name="delete-forever"
                       size={25}
-                      color= {colors[values[item.priority]]}
+                      color= {colors[item.priority]}
                     />
                   </TouchableOpacity>
                 </View>
